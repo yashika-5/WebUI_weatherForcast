@@ -3,6 +3,8 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const body_parser = require('body-parser')
+
+
 require('dotenv').config()
 const port = 45454
 aws.config.update ({
@@ -12,6 +14,9 @@ aws.config.update ({
     });
 const db = new aws.DynamoDB();
 const usr_table = "wf-users"
+const s3 = new aws.S3()
+const bucket_name = "wf-user-data"
+var uid = 1
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
@@ -25,13 +30,13 @@ app.get('/create', (req,res) => {
     res.render('signup')
 } )
 app.post('/upload', (req,res) => {
-    console.log('postreq----> ', req.body.fullname, req.body.pass, req.body.email,req.body.contact)
+    console.log('postreq -> ', req.body.fullname, req.body.pass, req.body.email, req.body.contact)
     var new_user = { 
-        user_id: {S: "u3"},
+        user_id: {S: `u${uid}`},
         fullname: {S: req.body.fullname},
         pass: {S: req.body.pass},
         email: {S: req.body.email},
-        contact: {S: req.body.contact},
+        contact: {N: req.body.contact},
         // nation: {S: req.body.nation},
     }
     params = {
@@ -44,6 +49,21 @@ app.post('/upload', (req,res) => {
             console.log("Error", err);
           } else {
             console.log("Success", data);
+            var param_s3 = {
+                Bucket: bucket_name,
+                Key: `u${uid}/`,
+                Body: 'No matter'
+            }
+            s3.upload(param_s3, (err, data) => {
+                if(err) {
+                    console.log(err)
+                }
+                else {
+                    console.log('upload done')
+                    uid = uid + 1;
+                }
+            })
+           
           }
         })
     res.send("successful")
