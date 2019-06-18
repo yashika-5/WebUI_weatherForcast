@@ -3,8 +3,15 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const body_parser = require('body-parser')
-require('dotenv').config();
+require('dotenv').config()
 const port = 45454
+aws.config.update ({
+    "region": "ap-south-1",
+    "accessKeyId": process.env.AWS_ACCESS_KEY,
+    "secretAcesssKey": process.env.AWS_SECRET_ACCESS
+    });
+const db = new aws.DynamoDB();
+const usr_table = "wf-users"
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
@@ -13,18 +20,34 @@ app.use(express.static('public'))
 app.use(body_parser.urlencoded({extended: true}));
 
 
-aws.config.update ({
-    "region": "ap-south-1",
-    "accessKeyId": process.env.AWS_ACCESS_KEY,
-    "secretAcesssKey": process.env.AWS_SECRET_ACCESS
-    });
-
-const doc_client = new aws.DynamoDB.DocumentClient();
-const usr_table = "wf-users"
 
 app.get('/create', (req,res) => {
     res.render('signup')
 } )
+app.post('/upload', (req,res) => {
+    console.log('postreq----> ', req.body.fullname, req.body.pass, req.body.email,req.body.contact)
+    var new_user = { 
+        user_id: {S: "u3"},
+        fullname: {S: req.body.fullname},
+        pass: {S: req.body.pass},
+        email: {S: req.body.email},
+        contact: {S: req.body.contact},
+        // nation: {S: req.body.nation},
+    }
+    params = {
+        TableName: usr_table,
+        Item: new_user,
+    }
+    
+    db.putItem(params, (err, data) => {
+        if (err) {
+            console.log("Error", err);
+          } else {
+            console.log("Success", data);
+          }
+        })
+    res.send("successful")
+})
 
 app.get('/fetch', (req, res) => {
 
@@ -36,7 +59,7 @@ app.get('/fetch', (req, res) => {
         }
     }
     
-    doc_client.get(params, function (err, data) {
+    db.get(params, function (err, data) {
         if (err) {
             console.log(err);
             handleError(err, res);
