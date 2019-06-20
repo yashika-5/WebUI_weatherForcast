@@ -1,0 +1,23 @@
+hi,i,am,testing,api,here,file1.txt,contenet,ends,here
+
+curl -u yashika.adhocnw@gmail.com:Narcissist@5  -H "Content-Type: application/json" -X POST -d @- https://dbc-b60127c0-14a8.cloud.databricks.com/api/2.0/jobs/create <<JSON
+{
+  "name": "SparkPi Python job",
+  "new_cluster": {
+    "spark_version": "5.2.x-scala2.11",
+    "node_type_id": "i3.xlarge",
+    "num_workers": 2
+  },
+  "spark_python_task": {
+    "python_file": "dbfs:/FileStore/tables/file_copy_to_new.py",
+    "parameters": [
+      "hi_a_param"
+    ]
+  }
+}
+JSON
+
+
+curl -u yashika.adhocnw@gmail.com:Narcissist@5 \
+-X POST -H 'Content-Type: application/json' \
+-d '{ "job_id": 1 }' https://dbc-b60127c0-14a8.cloud.databricks.com/api/2.0/jobs/run-now
