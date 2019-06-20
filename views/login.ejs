@@ -43,18 +43,18 @@
 <div class="container">
     <div class="row">
         <div class="form_bg">
-            <form>
+            <form method='post' action='/login'>
                  <h2 class="text-center">Login Page</h2>
                 <br/>
                 <div class="form-group">
-                    <input type="email" name="email" class="form-control" id="userid" placeholder="Email-id">
+                    <input type="email" name="username" class="form-control" id="userid" placeholder="Email-id">
                 </div>
                 <div class="form-group">
                     <input type="password" name="password" class="form-control" id="pwd" placeholder="Password">
                 </div>
                 <br/>
                 <div class="align-center">
-                    <button type="submit" class="btn btn-default" id="login">Login</button>
+                    <input type="submit" class="btn btn-default" id="login" value="Login">
                 </div>
             </form>
         </div>
