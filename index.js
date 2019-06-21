@@ -1,6 +1,7 @@
 const aws = require('aws-sdk')
 const express = require('express')
 const app = express()
+const fs = require('fs')
 const path = require('path')
 const body_parser = require('body-parser')
 const uuid = require('uuid/v4')
@@ -8,7 +9,16 @@ const session = require('express-session')
 const file_store = require('session-file-store')(session)
 const passport = require('passport')
 const local_strategy = require('passport-local').Strategy
-const formidable = require('formidable')
+const multer = require('multer')
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'tempupload')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + req.session.passport.user)
+    }
+  })
+var  tempupload = multer({storage: storage})
 
 
 
@@ -107,13 +117,23 @@ app.get('/uploadfile', (req,res) => {
 })
 
 
-app.post('/uploadfile', (req,res) => {
+app.post('/uploadfile', tempupload.single('datacsv'), (req,res, next) => {
     if(req.isAuthenticated()) {
-        var form = new formidable.IncomingForm()
-        form.parse(req, (err, fields, files) => {
-            res.write("file Uploaded")
-            console.log(files)
-        }) 
+        var file = req.file
+        fs.readFile('tempupload/datacsv-'+req.session.passport.user, (err, content) => {
+            // res.writeHead(404, { 'Content-Type': 'Csvdata' });
+            console.log(content.toString().split('\n')[0].split(','))
+            const param_to_upload_csv = {
+                Bucket: bucket_name,
+                Key: `${req.session.passport.user}/data.csv`,
+                Body: JSON.stringify(content, null, 2)
+            }
+            s3.upload(param_to_upload_csv, (s3err, content) => {
+                console.log(`File uploaded successfully at ${content.Location}`)
+            })
+        })
+        res.send("hi")
+        
     }
     else {
         res.redirect('/login') 
