@@ -50,7 +50,10 @@
         <h1>Predict Weather</h1>
         <h3>Upload your CSV file here</h3>
         <hr>
-        <input class="btn btn-default btn-lg" id="BSbtndanger" type="file" style="margin-left: 40%;"><i class="fa fa-paw" ></i></input>
+        <form action='/uploadfile', method='post' enctype="multipart/form-data">
+        <input class="btn btn-default btn-lg" id="BSbtndanger" type="file" style="margin-left: 40%;"><i class="fa fa-paw" ></i>
+        <input type="submit" value="Upload" >
+      </form>
       </div>
      </div>
   </div>

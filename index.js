@@ -8,6 +8,8 @@ const session = require('express-session')
 const file_store = require('session-file-store')(session)
 const passport = require('passport')
 const local_strategy = require('passport-local').Strategy
+const formidable = require('formidable')
+
 
 
 
@@ -97,12 +99,27 @@ app.get('/login' ,(req,res) => {
 
 app.get('/uploadfile', (req,res) => {
     if(req.isAuthenticated()) {
-        res.send("Authenticated sucessfully")
+        res.render('uploadfile')
     }
     else {
-        res.send("No acesss")
+        res.redirect('/login')
     }
 })
+
+
+app.post('/uploadfile', (req,res) => {
+    if(req.isAuthenticated()) {
+        var form = new formidable.IncomingForm()
+        form.parse(req, (err, fields, files) => {
+            res.write("file Uploaded")
+            console.log(files)
+        }) 
+    }
+    else {
+        res.redirect('/login') 
+    }
+})
+
 app.post('/login', passport.authenticate( 'local' ,  { successRedirect: '/uploadfile', failureRedirect: '/login'}))
     
 
