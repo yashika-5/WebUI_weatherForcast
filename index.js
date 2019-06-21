@@ -126,11 +126,12 @@ app.post('/uploadfile', tempupload.single('datacsv'), (req,res, next) => {
             const param_to_upload_csv = {
                 Bucket: bucket_name,
                 Key: `${req.session.passport.user}/data.csv`,
-                Body: JSON.stringify(content, null, 2)
+                Body: content.toString()
             }
             s3.upload(param_to_upload_csv, (s3err, content) => {
                 console.log(`File uploaded successfully at ${content.Location}`)
             })
+            fs.unlinkSync('tempupload/datacsv-'+req.session.passport.user)
         })
         res.send("hi")
         
