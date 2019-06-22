@@ -31,9 +31,9 @@ aws.config.update ({
     "secretAcesssKey": process.env.AWS_SECRET_ACCESS
     });
 const db = new aws.DynamoDB();
-const usr_table = "wf-user"
+const usr_table = process.env.TABLE_NAME 
 const s3 = new aws.S3()
-const bucket_name = "wf-user-data"
+const bucket_name = process.env.BUCKET_NAME
 var uid = 1
 
 app.set('view engine', 'ejs')
@@ -88,7 +88,7 @@ passport.deserializeUser((id,done) => {
     console.log("deserialize")
     var user  = {id: id}
     done(null, id)
-})
+}) 
 app.use(session({
     genid: (req) => {
         return uuid()
@@ -133,7 +133,7 @@ app.post('/uploadfile', tempupload.single('datacsv'), (req,res, next) => {
             })
             fs.unlinkSync('tempupload/datacsv-'+req.session.passport.user)
         })
-        res.send("hi")
+        res.send("uploaded")
         
     }
     else {
@@ -157,8 +157,8 @@ app.get('/', (req,res) => {
 app.get('/create', (req,res) => {
     res.render('signup')
 } )
-app.post('/upload', (req,res) => {
-    console.log('postreq -> ', req.body.fullname, req.body.pass, req.body.email, req.body.contact)
+app.post('/create', (req,res) => {
+    // console.log('postreq -> ', req.body.fullname, req.body.pass, req.body.email, req.body.contact)
     var new_user = { 
         user_id: {S: `u${uid}`},
         fullname: {S: req.body.fullname},
@@ -194,41 +194,8 @@ app.post('/upload', (req,res) => {
            
           }
         })
-    res.send("successful")
+    res.redirect('/login')
 })
-
-app.get('/fetch', (req, res) => {
-
-    var user_id = "u2"
-    var params = {
-        TableName: usr_table,
-        "IndexName": "email-index",
-        "ProjectionExpression": "email, pass, user_id",
-        "KeyConditionExpression": "email = :v1",
-        "ExpressionAttributeValues": {
-            ":v1": {"S": "m@m"},
-        },
-    }
-    
-    db.query(params, function (err, data) {
-        if (err) {
-            console.log(err);
-            handleError(err, res);
-        } else {
-            handleSuccess(data.Items, res);
-        }
-     })
-    })
-    function handleError(err, res) {
-        res.json({ 'message': 'server side error', statusCode: 500, error: 
-        err })
-    }
-    
-    function handleSuccess(data, res) {
-        res.json({ message: 'success', statusCode: 200, data: data[0].user_id.S })
-    }
-
-
 
 app.listen(port,(err)=>{
     if(err) console.log(err)
