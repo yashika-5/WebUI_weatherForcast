@@ -196,7 +196,9 @@ app.post('/create', (req,res) => {
         })
     res.redirect('/login')
 })
-
+app.get('/wait', (req,res) => {
+    res.render('wait10')
+})
 app.listen(port,(err)=>{
     if(err) console.log(err)
     else console.log(`server running    -->  on ${port}`)
