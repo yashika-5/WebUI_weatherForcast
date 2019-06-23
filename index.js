@@ -197,8 +197,24 @@ app.post('/create', (req,res) => {
     res.redirect('/login')
 })
 app.get('/wait', (req,res) => {
-    res.render('wait10')
+    if(req.isAuthenticated()) {
+        res.render('wait10')
+    }
+    else {
+        res.redirect('/login')
+    }
 })
+
+app.get('/results', (req, res) => {
+    if(req.isAuthenticated()){
+    res.send("final Result will be shown here!")
+    }
+    else{
+        res.redirect('/login')
+    }
+})
+
+
 app.listen(port,(err)=>{
     if(err) console.log(err)
     else console.log(`server running    -->  on ${port}`)
