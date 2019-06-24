@@ -14,8 +14,8 @@
 
 # In[2]:
 
-# import sys
-# uid = sys.argv[1]
+import sys
+uid = sys.argv[1]
 from pyspark.sql import SQLContext
 from pyspark.sql import DataFrameNaFunctions
 
@@ -56,15 +56,15 @@ from pyspark import SparkContext
 # conf = SparkConf().setAppName("pyspark")
 # sc = SparkContext(conf=conf)
 sqlContext = SQLContext(sc)
-df = sqlContext.read.load('/mnt/my-data/u1/data.csv',format = 'com.databricks.spark.csv',header='true',inferSchema='true')
+df = sqlContext.read.load(f'/mnt/my-data/{uid}/data.csv',format = 'com.databricks.spark.csv',header='true',inferSchema='true')
 
 
 # In[5]:
 
 
 #df.columns
-col_num = dbutils.fs.head('/mnt/my-data/u1/col_num.csv')
-data_col = dbutils.fs.head('/mnt/my-data/u1/data.csv')
+col_num = dbutils.fs.head(f'/mnt/my-data/{uid}/col_num.csv')
+data_col = dbutils.fs.head(f'/mnt/my-data/{uid}/data.csv')
 
 col_num = col_num.split(',')
 data_col = data_col.split('\n')[0].split(',')
@@ -92,15 +92,15 @@ featureColumns = dependent_col
 
 # In[7]:
 
-
-df = df.drop('number')
+for colname in data_col:
+  if (colname not in  featureColumns):
+        df = df.drop(colname)
 
 
 # In[8]:
 
 
 df = df.na.drop()
-
 
 # In[9]:
 
@@ -182,7 +182,7 @@ assembled = assembler.transform(binarizedDF)
 # In[17]:
 
 
-dt = DecisionTreeClassifier(labelCol="label",featuresCol="features",maxDepth=5,minInstancesPerNode=20,impurity="gini")
+
 
 
 # In[18]:
@@ -195,6 +195,7 @@ model = pipeline.fit(trainingData)
 # Let's make predictions using our test data set:
 
 # In[19]:
+dt = DecisionTreeClassifier(labelCol="label",featuresCol="features",maxDepth=5,minInstancesPerNode=20,impurity="gini")
 
 
 predictions = model.transform(testData)
@@ -214,5 +215,5 @@ predictions = model.transform(testData)
 # In[21]:
 
 
-predictions.select("prediction","label").write.save(path = '/mnt/my-data/u1/pr.csv',format="com.databricks.spark.csv",header='true')
+predictions.select("prediction","label").write.save(path = f'/mnt/my-data/{uid}/pr.csv',format="com.databricks.spark.csv",header='true')
 
