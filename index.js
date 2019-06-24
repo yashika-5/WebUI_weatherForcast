@@ -121,9 +121,9 @@ app.post('/uploadfile', tempupload.single('datacsv'), (req,res, next) => {
     if(req.isAuthenticated()) {
         var file = req.file
         fs.readFile('tempupload/datacsv-'+req.session.passport.user, (err, content) => {
-            // res.writeHead(404, { 'Content-Type': 'Csvdata' });
-            console.log(content.toString().split('\n')[0].split(','))
-            const param_to_upload_csv = {
+            colname = JSON.stringify(content.toString().split('\n')[0].split(',') )
+            res.render('select_target', {colname : colname})
+            var param_to_upload_csv = {
                 Bucket: bucket_name,
                 Key: `${req.session.passport.user}/data.csv`,
                 Body: content.toString()
@@ -133,7 +133,8 @@ app.post('/uploadfile', tempupload.single('datacsv'), (req,res, next) => {
             })
             fs.unlinkSync('tempupload/datacsv-'+req.session.passport.user)
         })
-        res.send("uploaded")
+        // console.log(data_for_area_graph)
+       
         
     }
     else {
@@ -214,6 +215,39 @@ app.get('/results', (req, res) => {
     }
 })
 
+app.get('/areachart', (req,res) => {
+    res.render('areachart')
+})
+app.post('/final_submit', (req, res) => {
+    console.log("check here----",req.body)
+    // first element in the list will be target column 
+    var col_num = [req.body.targetcol]
+    for(var key in req.body) {
+        if(req.body[key] == 'on') {
+            col_num.push(key)
+        }
+        console.log(key, req.body[key])
+    }
+    console.log(col_num.toString())
+    param_to_save_colnum={
+        Bucket: bucket_name,
+        Key: `${req.session.passport.user}/col_num.csv`,
+        Body: col_num.toString()
+    }
+    s3.upload(param_to_save_colnum, (err, data) => {
+        if(err) {
+            console.log(err)
+        }
+        else {
+            console.log('upload done col num')
+        }
+    })
+    res.send("check Console")
+})
+
+// app.get('*', (req,res) => {
+//     res.redirect('/')
+// })
 
 app.listen(port,(err)=>{
     if(err) console.log(err)

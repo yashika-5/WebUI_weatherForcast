@@ -63,14 +63,29 @@ df = sqlContext.read.load('/mnt/my-data/u1/data.csv',format = 'com.databricks.sp
 
 
 #df.columns
+col_num = dbutils.fs.head('/mnt/my-data/u1/col_num.csv')
+data_col = dbutils.fs.head('/mnt/my-data/u1/data.csv')
 
+col_num = col_num.split(',')
+data_col = data_col.split('\n')[0].split(',')
 
+dependent_col = []
+
+o_index = True
+for ele in col_num:
+  if(o_index == True) :
+    target_col = data_col[int(ele)]
+    o_index = False
+  else:
+    dependent_col.append(data_col[int(ele)])
 # In[6]:
 
 
-featureColumns = ['air_pressure_9am','air_temp_9am','avg_wind_direction_9am','avg_wind_speed_9am',
-        'max_wind_direction_9am','max_wind_speed_9am','rain_accumulation_9am',
-        'rain_duration_9am']
+# featureColumns = ['air_pressure_9am','air_temp_9am','avg_wind_direction_9am','avg_wind_speed_9am',
+#         'max_wind_direction_9am','max_wind_speed_9am','rain_accumulation_9am',
+#         'rain_duration_9am']
+
+featureColumns = dependent_col
 
 
 # Dropping unused and missing data.
@@ -98,7 +113,9 @@ df = df.na.drop()
 # In[10]:
 
 
-binarizer = Binarizer(threshold=24.99999,inputCol="relative_humidity_3pm",outputCol="label")
+# binarizer = Binarizer(threshold=24.99999,inputCol="relative_humidity_3pm",outputCol="label")
+
+binarizer = Binarizer(threshold=24.99999,inputCol=target_col,outputCol="label")
 binarizedDF = binarizer.transform(df)
 
 

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><Target</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" type="text/css" href="login_style.css"> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-top-fixed">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><i class="fa fa-hand-peace-o"></i> Weather</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+       <!-- <li class="active"><a href="index.html">Home </a></li>-->
+        
+       
+        
+      </ul>
+      	
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container -->
+</nav>
+<div class="container">
+ <div>
+
+        <p>The selected value:</p>
+        <form action="/final_submit" method="POST">
+        <select id="myselection" name='targetcol' style="margin-left: 44%; padding: 1%; font-size: 25px;margin-top: 20%;">
+          <option value="None" id="last">None</option>
+        </select>
+        <br>
+        <input type="checkbox" name="all" id="all"><font color="white">All</font>
+        <br>
+        <input type="submit" value="Create Cluster">
+      </form>
+       
+
+      </div>
+</div>
+
+
+
+<style>
+.form_bg {
+    background-color:#eee;
+    color:#666;
+    padding:20px;
+    border-radius:10px;
+    position: absolute;
+    border:1px solid #fff;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 320px;
+    height: 280px;
+}
+.align-center {
+    text-align:center;
+}
+body {
+    background:#333;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+
+
+<script>
+  // <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+  //    $(document).ready(function() {
+  //       $("#submit").click(function(){      
+  //         $("#myselection option:selected").text();
+  //           alert( $("#myselection option:selected").text() );
+  //         });
+  //    });
+    //  console.log((<%-colname%>)[0])
+      var colnum = 0 ;
+      //a number will be passed insted of column name 
+     (<%-colname%>).forEach(element => {
+       var new_opt = document.createElement("option")
+       var ele = document.createTextNode(element)
+       new_opt.appendChild(ele) 
+       new_opt.setAttribute('value',colnum)
+       colnum++
+       var last_opt = document.getElementById("last")
+       last_opt.parentNode.insertBefore(new_opt, last_opt)
+     });
+     colnum =0 ;
+     (<%-colname%>).forEach(element => {
+       var new_check = document.createElement("input")
+       var  br_tag = document.createElement('br')
+       var font_tag = document.createElement('font')
+       var ele = document.createTextNode(element)
+       font_tag.appendChild(ele)
+       new_check.setAttribute('name', colnum)
+       new_check.setAttribute('type', 'checkbox')
+       font_tag.setAttribute('color', 'white')
+       colnum++
+       var all_check = document.getElementById("all")
+       all_check.parentNode.insertBefore(new_check, all_check)
+       all_check.parentNode.insertBefore(font_tag, all_check)
+       all_check.parentElement.insertBefore(br_tag,all_check)
+     })
+</script>
+
+</html>
+
