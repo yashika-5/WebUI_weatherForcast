@@ -127,6 +127,19 @@ app.post('/uploadfile', tempupload.single('datacsv'), (req,res, next) => {
         fs.readFile('tempupload/datacsv-'+req.session.passport.user, (err, content) => {
             colname = JSON.stringify(content.toString().split('\n')[0].split(',') )
             res.render('select_target', {colname : colname})
+            var param_to_delete_previous = {
+                Bucket: bucket_name,
+                Key: `${req.session.passport.user}/`,
+                Body: "no matter"
+            }
+            s3.deleteObject(param_to_delete_previous, (dp_err, dp_data) => {
+                if (dp_data) {
+                    console.log("File deleted successfully");
+                }
+                else {
+                    console.log("Check if you have sufficient permissions : "+err);
+                }
+            })
             var param_to_upload_csv = {
                 Bucket: bucket_name,
                 Key: `${req.session.passport.user}/data.csv`,
@@ -259,7 +272,7 @@ app.post('/final_submit', (req, res) => {
         
         "python_file": "dbfs:/FileStore/tables/drvcode.py",
         "parameters": [
-          "u1"
+            req.session.passport.user
       ]
       }
     })
