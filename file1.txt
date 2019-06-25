@@ -2,22 +2,18 @@ hi,i,am,testing,api,here,file1.txt,contenet,ends,here
 
 curl -u yashikagupta.it20@jecrc.ac.in:Narcissist@5  -H "Content-Type: application/json" -X POST -d @- https://dbc-d80ba214-2140.cloud.databricks.com/api/2.0/jobs/create <<JSON
 {
-  "name": "SparkPi Python job",
+  "name": "ml _job",
   "new_cluster": {
-    "--conf",
     "spark_version": "5.2.x-scala2.11",
     "node_type_id": "i3.xlarge",
     "num_workers": 8
 
   },
-  "spark_submit_task": {
+  "spark_python_task": {
     
-    "python_file": "dbfs:/mnt/my-data/driver-code/mlcode2.py",
+    "python_file": "dbfs:/FileStore/tables/drvcode.py",
     "parameters": [
-    "--class",
-    "org.apache.spark.examples.SparkPi",
-    "dbfs:/mnt/my-data/driver-code/mlcode2.py",
-    "u1"
+      "u1"
   ]
   }
 }
@@ -26,7 +22,7 @@ JSON
 
 curl -u yashikagupta.it20@jecrc.ac.in:Narcissist@5 \
 -X POST -H 'Content-Type: application/json' \
--d '{ "job_id": 7 }' https://dbc-d80ba214-2140.cloud.databricks.com/api/2.0/jobs/run-now
+-d '{ "job_id": 22 }' https://dbc-d80ba214-2140.cloud.databricks.com/api/2.0/jobs/run-now
 
 curl -u yashikagupta.it20@jecrc.ac.in:Narcissist@5  -H "Content-Type: application/json" -X POST -d @- https://dbc-d80ba214-2140.cloud.databricks.com/api/2.0/jobs/create <<JSON
 {

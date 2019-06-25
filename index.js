@@ -10,6 +10,8 @@ const file_store = require('session-file-store')(session)
 const passport = require('passport')
 const local_strategy = require('passport-local').Strategy
 const multer = require('multer')
+const https = require('https')
+const base64 = require('base-64')
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'tempupload')
@@ -19,6 +21,7 @@ var storage = multer.diskStorage({
     }
   })
 var  tempupload = multer({storage: storage})
+
 
 
 
@@ -35,6 +38,7 @@ const usr_table = process.env.TABLE_NAME
 const s3 = new aws.S3()
 const bucket_name = process.env.BUCKET_NAME
 var uid = 1
+const TOKEN = process.env.DATABRICKS_TOKEN
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
@@ -219,8 +223,9 @@ app.get('/areachart', (req,res) => {
     res.render('areachart')
 })
 app.post('/final_submit', (req, res) => {
-    console.log("check here----",req.body)
+    // console.log("check here----",req.body)
     // first element in the list will be target column 
+    if(req.isAuthenticated()) {
     var col_num = [req.body.targetcol]
     for(var key in req.body) {
         if(req.body[key] == 'on') {
@@ -242,8 +247,83 @@ app.post('/final_submit', (req, res) => {
             console.log('upload done col num')
         }
     })
-    res.send("check Console")
-})
+    var data = JSON.stringify({
+        "name": "pyspark_mljob",
+      "new_cluster": {
+        "spark_version": "5.2.x-scala2.11",
+        "node_type_id": "i3.xlarge",
+        "num_workers": 8
+    
+      },
+      "spark_python_task": {
+        
+        "python_file": "dbfs:/FileStore/tables/drvcode.py",
+        "parameters": [
+          "u1"
+      ]
+      }
+    })
+    const options_to_create_job = {
+      hostname: "dbc-d80ba214-2140.cloud.databricks.com",
+      port: 443,
+      path: '/api/2.0/jobs/create',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Basic " + base64.encode("token:" + TOKEN)
+      }
+    }
+    
+    const req_to_create = https.request(options_to_create_job, (res_for_create) => {
+      //console.log(`statusCode: ${res.statusCode}`)
+    
+      res_for_create.on('data', (d) => {
+      process.stdout.write(d)
+      data = d.toString()
+      const options_to_run_job = {
+        hostname: "dbc-d80ba214-2140.cloud.databricks.com",
+        port: 443,
+        path: '/api/2.0/jobs/run-now',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': "Basic " + base64.encode("token:" + TOKEN)
+        }
+      }
+      const req_to_run = https.request(options_to_run_job, (res_for_run) => {
+        res_for_run.on('data', (d) => {
+          process.stdout.write(d)
+        })
+      })
+      req_to_run.on('error', (error) => {
+        console.error(error)
+      })
+      
+      req_to_run.write(data)
+      
+      
+      req_to_run.end()
+      
+    
+      })
+    })
+    
+    req_to_create.on('error', (error) => {
+      console.error(error)
+    })
+    
+    req_to_create.write(data)
+    
+    
+    req_to_create.end()
+
+    res.render('wait10') 
+}
+else {
+    req.redirect('/login')
+}
+}) 
+
 
 // app.get('*', (req,res) => {
 //     res.redirect('/')
