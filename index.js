@@ -225,16 +225,29 @@ app.get('/wait', (req,res) => {
 
 app.get('/results', (req, res) => {
     if(req.isAuthenticated()){
-    res.send("final Result will be shown here!")
+        param_to_get_acc = {
+            Bucket: bucket_name,
+            Key: `${req.session.passport.user}/acc.txt`,
+        }
+        s3.getObject(param_to_get_acc, (err_s3_acc, data_acc) => {
+            if(err_s3_acc) {
+                console.log(err_s3_acc)
+            }
+            else {
+                eff = data_acc.Body.toString()
+                res.render('results', {eff: eff})
+            }
+        })
+    
     }
     else{
         res.redirect('/login')
     }
 })
 
-app.get('/areachart', (req,res) => {
-    res.render('areachart')
-})
+// app.get('/areachart', (req,res) => {
+//     res.render('areachart')
+// })
 app.post('/final_submit', (req, res) => {
     // console.log("check here----",req.body)
     // first element in the list will be target column 
@@ -261,7 +274,7 @@ app.post('/final_submit', (req, res) => {
         }
     })
     var data = JSON.stringify({
-        "name": "pyspark_mljob",
+        "name": `${req.session.passport.user}_job`,
       "new_cluster": {
         "spark_version": "5.2.x-scala2.11",
         "node_type_id": "i3.xlarge",

@@ -16,6 +16,7 @@
 
 import sys
 uid = sys.argv[1]
+# uid = 'u1'
 from pyspark.sql import SQLContext
 from pyspark.sql import DataFrameNaFunctions
 
@@ -58,7 +59,7 @@ from pyspark import SparkContext
 sqlContext = SQLContext(sc)
 df = sqlContext.read.load("/mnt/my-data/%s/data.csv" % (uid),format = 'com.databricks.spark.csv',header='true',inferSchema='true')
 
-
+df1 = df.select("*").toPandas()
 # In[5]:
 
 
@@ -219,3 +220,110 @@ predictions = model.transform(testData)
 
 predictions.select("prediction","label").write.save(path = "/mnt/my-data/%s/prd" % (uid),format="com.databricks.spark.csv",header='true')
 
+
+ # In[2]:
+
+
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+from pyspark.mllib.evaluation import MulticlassMetrics
+# df.show(10)
+
+
+# In[3]:
+
+
+predictions = sqlContext.read.load("/mnt/my-data/%s/prd" % (uid),format = 'com.databricks.spark.csv',header='true',inferSchema='true')
+
+
+# In[4]:
+
+
+evaluator = MulticlassClassificationEvaluator(labelCol="label",predictionCol="prediction",metricName="accuracy")
+
+
+# In[5]:
+
+
+accuracy = evaluator.evaluate(predictions)
+
+
+# In[6]:
+
+
+# predictions.show(10)
+
+
+# In[7]:
+
+
+# print("Accuracy = %g " % (accuracy))
+
+
+# In[8]:
+
+
+# predictions.rdd.take(2)
+
+
+# In[9]:
+
+
+# predictions.rdd.map(tuple).take(2)
+
+
+# In[10]:
+
+
+metrics = MulticlassMetrics(predictions.rdd.map(tuple))
+
+
+# In[11]:
+
+
+metrics.confusionMatrix().toArray().transpose()
+
+
+# In[12]:
+
+
+# print ("Error = %g " % (1.0 - accuracy))
+
+
+# In[13]:
+
+
+# print ("Accuracy = %.2g" % (accuracy * 100))
+dbutils.fs.put("/mnt/my-data/%s/acc.txt" % (uid), str(accuracy))
+
+
+
+# In[14]:
+
+
+metrics.confusionMatrix().toArray()
+
+
+# In[15]:
+
+
+df1.corr
+
+
+# In[16]:
+
+
+import seaborn as sns
+svm=display(sns.heatmap(df1.corr(),annot=True).figure)
+
+
+# In[17]:
+
+
+import matplotlib.pyplot as plt
+p = plt.savefig('svm_conf.jpg', dpi=400)  # jpg image of heat map
+
+# dbutils.fs.put("/mnt/my-data/%s/heatmap.jpg" % (uid), p)
+# In[18]:
+
+
+# display(p)
