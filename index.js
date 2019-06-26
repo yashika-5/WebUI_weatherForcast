@@ -129,7 +129,7 @@ app.post('/uploadfile', tempupload.single('datacsv'), (req,res, next) => {
             res.render('select_target', {colname : colname})
             var param_to_delete_previous = {
                 Bucket: bucket_name,
-                Key: `${req.session.passport.user}/`,
+                Key: `${req.session.passport.user}/*`,
                 Body: "no matter"
             }
             s3.deleteObject(param_to_delete_previous, (dp_err, dp_data) => {
@@ -232,6 +232,7 @@ app.get('/results', (req, res) => {
         s3.getObject(param_to_get_acc, (err_s3_acc, data_acc) => {
             if(err_s3_acc) {
                 console.log(err_s3_acc)
+                res.redirect('/uploadfile')
             }
             else {
                 eff = data_acc.Body.toString()
@@ -252,7 +253,7 @@ app.post('/final_submit', (req, res) => {
     // console.log("check here----",req.body)
     // first element in the list will be target column 
     if(req.isAuthenticated()) {
-    var col_num = [req.body.targetcol]
+    var col_num = [req.body.targetcol, req.body.binp]
     for(var key in req.body) {
         if(req.body[key] == 'on') {
             col_num.push(key)

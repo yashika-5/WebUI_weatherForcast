@@ -73,11 +73,15 @@ data_col = data_col.split('\n')[0].split(',')
 dependent_col = []
 
 o_index = True
+i_index = True
 for ele in col_num:
   if(o_index == True) :
     target_col = data_col[int(ele)]
     o_index = False
-  else:
+  elif(i_index == True) :
+    binp = float(ele)
+    i_index = False
+  else :
     dependent_col.append(data_col[int(ele)])
 # In[6]:
 
@@ -116,7 +120,7 @@ df = df.na.drop()
 
 # binarizer = Binarizer(threshold=24.99999,inputCol="relative_humidity_3pm",outputCol="label")
 
-binarizer = Binarizer(threshold=24.99999,inputCol=target_col,outputCol="label")
+binarizer = Binarizer(threshold=binp,inputCol=target_col,outputCol="label")
 binarizedDF = binarizer.transform(df)
 
 
@@ -312,15 +316,15 @@ df1.corr
 # In[16]:
 
 
-import seaborn as sns
-svm=display(sns.heatmap(df1.corr(),annot=True).figure)
+# import seaborn as sns
+# svm=display(sns.heatmap(df1.corr(),annot=True).figure)
 
 
-# In[17]:
+# # In[17]:
 
 
-import matplotlib.pyplot as plt
-p = plt.savefig('svm_conf.jpg', dpi=400)  # jpg image of heat map
+# import matplotlib.pyplot as plt
+# p = plt.savefig('svm_conf.jpg', dpi=400)  # jpg image of heat map
 
 # dbutils.fs.put("/mnt/my-data/%s/heatmap.jpg" % (uid), p)
 # In[18]:

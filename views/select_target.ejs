@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><Target</title>
+	<title>Target</title>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<!-- <link rel="stylesheet" type="text/css" href="login_style.css"> -->
@@ -39,11 +39,16 @@
 
         <p>The selected value:</p>
         <form action="/final_submit" method="POST">
-        <select id="myselection" name='targetcol' style="margin-left: 44%; padding: 1%; font-size: 25px;margin-top: 20%;">
+        <select id="targetcol" name='targetcol' style="margin-left: 44%; padding: 1%; font-size: 25px;margin-top: 20%;" onchange="check_null(this.value);" >
           <option value="None" id="last">None</option>
         </select>
+        <br />
+        <input type="text" name="binp" id="binp" placeholder="Input for Binarizer">
+        <br />
+
+        <span id="message"></span>
         <br>
-        <input type="checkbox" name="all" id="all"><font color="white">All</font>
+        <input type="checkbox" name="all" id="all" hidden>
         <br>
         <input type="submit" value="Create Cluster">
       </form>
@@ -104,8 +109,16 @@ body {
        var last_opt = document.getElementById("last")
        last_opt.parentNode.insertBefore(new_opt, last_opt)
      });
+     var select_dependent = function() {
+
+    
      colnum =0 ;
      (<%-colname%>).forEach(element => {
+      var all_check = document.getElementById("all")
+       
+       
+       
+
        var new_check = document.createElement("input")
        var  br_tag = document.createElement('br')
        var font_tag = document.createElement('font')
@@ -114,12 +127,27 @@ body {
        new_check.setAttribute('name', colnum)
        new_check.setAttribute('type', 'checkbox')
        font_tag.setAttribute('color', 'white')
+       
        colnum++
-       var all_check = document.getElementById("all")
        all_check.parentNode.insertBefore(new_check, all_check)
        all_check.parentNode.insertBefore(font_tag, all_check)
        all_check.parentElement.insertBefore(br_tag,all_check)
+     
      })
+    
+     }
+      var check_null = function(targetcol) {
+        if(targetcol == "None") {
+          document.getElementById('message').style.color = "red"
+          document.getElementById('message').innerHTML = "Taregt Column Can not be Null"
+          
+        }
+        else {
+          document.getElementById('message').style.color = "green"
+          document.getElementById('message').innerHTML = "Taregt Column Selected"
+          select_dependent()
+        }
+      }
 </script>
 
 </html>
