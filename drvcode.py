@@ -295,9 +295,9 @@ metrics.confusionMatrix().toArray().transpose()
 
 # In[13]:
 
-
+accuracy = str(accuracy * 100) + '%'
 # print ("Accuracy = %.2g" % (accuracy * 100))
-dbutils.fs.put("/mnt/my-data/%s/acc.txt" % (uid), str(accuracy))
+dbutils.fs.put("/mnt/my-data/%s/acc.txt" % (uid), accuracy)
 
 
 

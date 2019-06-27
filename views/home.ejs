@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="login_style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-top-fixed">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><i class="fa fa-hand-peace-o"></i> Weather</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+       <!-- <li class="active"><a href="index.html">Home </a></li>-->
+        
+       
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+			<li><a href="/login">Login <i class="fa fa-user"></i></a></li>
+			<li><a href="/create"> Sign Up  <i class="fa fa-user-plus"></i></a></li>
+	</ul>		
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container -->
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="form_bg">
+            <!-- <form method='post'> -->
+                 <h2 class="text-center">Here are few quick links to help You!!</h2>
+                 <br/>
+                 <div class="align-center">
+                     <a href="https://github.com/yashika-5/WebUI_weatherForcast"><button class="btn btn-default" value="Github Repo">Github Repo</button></a>
+                 </div>
+                <br/>
+                <div class="align-center">
+                    <a href="https://github.com/yashika-5/WebUI_weatherForcast/blob/master/README.md"><button class="btn btn-default" value="Github Repo">Documentation</button></a>
+                </div>
+            <!-- </form> -->
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .form_bg {
+        background-color:#eee;
+        color:#666;
+        padding:20px;
+        border-radius:10px;
+        position: absolute;
+        border:1px solid #fff;
+        margin: auto;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 320px;
+        height: 280px;
+    }
+    .align-center {
+        text-align:center;
+    }
+    body {
+        background:#333;
+    }
+    </style>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        popupstr = `Here are few steps to use the portal
+        -> Create an account using the signup button in top right cornor.
+        -> Login using your credentials.
+        -> Upload your data file in csv format in standard csv format means first row must be of column names.
+        -> Select Target Column and Enter threshold value for binarizer.
+        -> Select Dependent Columns.
+        -> Give us 10 mins until we set up a new databricks job cluster and train our Decesion Tree model.
+        -> Here You will be given Accuracy of your model.
+            click on Ok to proceed.`
+        confirm(popupstr)
+    </script>
+    </body>
+    </html>
+    

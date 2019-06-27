@@ -39,18 +39,21 @@
 
         <p>The selected value:</p>
         <form action="/final_submit" method="POST">
-        <select id="targetcol" name='targetcol' style="margin-left: 44%; padding: 1%; font-size: 25px;margin-top: 20%;" onchange="check_null(this.value);" >
+          <h3><font color='white' style="margin-left: 40%; padding: 1%; font-size: 25px;margin-top: 2%;">Select Target Column</font></h3>
+          <br>
+        <select id="targetcol" name='targetcol' style="margin-left: 44%; padding: 1%; font-size: 25px;margin-top: 2%;" onchange="check_null(this.value);" >
           <option value="None" id="last">None</option>
         </select>
         <br />
-        <input type="text" name="binp" id="binp" placeholder="Input for Binarizer">
-        <br />
 
-        <span id="message"></span>
+        <span style="margin-left: 44%; padding: 1%; font-size: 25px;margin-top: 20%;" id="message"></span>
+        <br />
+        <input type="text" name="binp" id="binp" style="margin-left: 44%; padding: 1%; font-size: 15px; margin-top: 2%; margin-bottom: 4% " placeholder="Input for Binarizer">
+      
         <br>
-        <input type="checkbox" name="all" id="all" hidden>
+        <input style="margin-left: 44%; padding: 1%; font-size: 25px;margin-top: 20%;" type="checkbox" name="all" id="all" hidden>
         <br>
-        <input type="submit" value="Create Cluster">
+        <input style="margin-left: 44%; padding: 1%; font-size: 25px;margin-top: 2%;" type="submit" value="Create Cluster">
       </form>
        
 
@@ -126,6 +129,7 @@ body {
        font_tag.appendChild(ele)
        new_check.setAttribute('name', colnum)
        new_check.setAttribute('type', 'checkbox')
+       new_check.setAttribute('style', 'margin-left: 44%; padding: 1%; font-size: 15px; ')
        font_tag.setAttribute('color', 'white')
        
        colnum++

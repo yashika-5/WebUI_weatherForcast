@@ -166,11 +166,7 @@ app.post('/login', passport.authenticate( 'local' ,  { successRedirect: '/upload
 
 
 app.get('/', (req,res) => {
-    if(req.isAuthenticated()) {
-    res.send("done") }
-    else {
-        res.send("note done")
-    }
+    res.render('home')
 })
 app.get('/create', (req,res) => {
     res.render('signup')
@@ -185,7 +181,7 @@ app.post('/create', (req,res) => {
         contact: {N: req.body.contact},
         // nation: {S: req.body.nation},
     }
-    params = {
+    params = { 
         TableName: usr_table,
         Item: new_user,
     }
